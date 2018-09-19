@@ -44,7 +44,9 @@ v[-c(1,2)]
 v[c(FALSE, TRUE, TRUE, FALSE)]
 v[c(2,1)] # Swapping the index gives the second number first
 v[c("two","three")] # Result is the number named "two", then NA named <NA>
-#Subsetting "all but some" using names
+## two <NA> 
+## 2   NA
+#Subsetting v "all but some" using names
 v[-c("two")] #No this doesn't work
 v[c(FALSE, TRUE)] #Recycles by taking every other one
 tail(v,1) # Gives the last element of the vector
@@ -53,6 +55,7 @@ tail(v,1) # Gives the last element of the vector
 Five <- c(1,2,3,4,NA)
 is.na(Five)
 ##[1] FALSE FALSE FALSE FALSE  TRUE
+#You can't combine strings and NaN in one vector. It would turn NaN into "NaN"
 
 #Extend this to a vector of length 5000
 FiveThousand <- c(NA,1:4999)
