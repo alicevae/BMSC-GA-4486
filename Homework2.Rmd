@@ -1,10 +1,10 @@
 ---
-title: "Homework 2, Alice"
+title: "Homework 2, Eastoa01"
 output: html_document
 ---
 
-Rename the blood_type_factor in the above example as follows:
-levels(blood_type_factor) <- c("BT_A", "BT_B", "BT_AB", "BT_O")
+Rename the blood_type_factor in the above example as follows:  
+levels(blood_type_factor) <- c("BT_A", "BT_B", "BT_AB", "BT_O")  
 and justify the result of outputting blood_type_factor. Use str() to support your answer.
 
 ```{r}
@@ -26,29 +26,72 @@ blood_test <- list(Fluid="Blood sugar", Category="High", Value=140, Units="mg/dL
 patient <- list(Name="Mike", Age=36, Btest = blood_test)
 ```
 
-What does patient[c(1,3)] give us? A list.
+What does patient[c(1,3)] give us? *A list.*
 ```{r}
 patient[c(1,3)]
 class(patient[c(1,3)])
 ```
 
-What does patient[[c(1,3)]] give us? An error, because there's no 3rd item in the first item on the list.
+What does patient[[c(1,3)]] give us? *An error, because there's no 3rd item in the first item on the list.*
 
 ```{r}
 #patient[[c(1,3)]]
 #Error in patient[[c(1, 3)]] : subscript out of bounds
 ```
 
-How about patient[[c(3,1)]]? A character. It gave us the first value in the 3rd item.
+How about patient[[c(3,1)]]? *A character. It gave us the first value in the 3rd item.*
 ```{r}
 patient[[c(3,1)]]
 class(patient[[c(3,1)]])
 ```
 
-How do you remove an element from a list? I just removed the whole column, which probably isn't right. So for good measure, I also made the age into NA.
+How do you remove an element from a list? *I just removed the whole column, which probably isn't right. So for good measure, I also made the age into NA.*
 ```{r echo=TRUE}
 patient$Name <- NULL
 patient[c(1)] <- NA
 patient
 ```
 
+###Data frames
+```{r include=FALSE}
+name <- c("Anne", "James", "Mike", "Betty")
+age <- c(20, 43, 27,25)
+cancer <- c(TRUE, FALSE, FALSE, TRUE)
+df <- data.frame(Name=name, Age=age, Cancer_Status=cancer)
+df$Tumor_size <- c("T3", "T0", "T0", "T2")
+tom <- data.frame(Name="Tom", Age=47, Cancer_Status="TRUE", Tumor_size="T2")
+df <- rbind(df, tom)
+```
+My data frame is 4 observations of 3 variables.  Name is a factor with 4 levels, Age is a numeric variable, and Cancer_Status is logical.  
+If you try to combine vectors with unequal length into a data frame, you get the following error message:
+
+<span style="color:red">Error in data.frame(Name = name, Age = age, Cancer_Status = cancer) : arguments imply differing number of rows: 4, 3</span>
+
+Test the operations of lists (like ["age"] & [["age"]]) on data frames.
+```{r}
+class(df["Age"]) # Prints a data frame with just one column
+class(df[["Age"]]) #Prints a numeric vector
+```
+Use cbind() to append a vector of choice.  
+```{r}
+df2 <- cbind(df,Family_History=c(TRUE,TRUE, FALSE,FALSE))
+```
+What happens if the length of the appending vector is greater than (or less than) row dimensions? *If the appending vector has too many or too few elements, you get an error message about the number of rows.*
+
+Can you use the list() function instead of the data frame function in the above code? *YES*
+What happens if you leave the arguments name=, age= etc. in the above code?
+```{r}
+tom <- list(Name="Mary", Age=37, Cancer_Status="FALSE", Tumor_size="T0")
+df <- rbind(df, tom)
+
+```
+
+What happens if you leave *out* the arguments name=, age= etc. in the above code? *It doesn't work; you get an error saying the names don't match.*
+
+Check out the function expand.grid(), what is it for? *expand.grid creates a data frame from all combinations of factor variables.*
+Try out the following example and think when it is useful.
+```{r}
+expand.grid(height = as.character(seq(60, 70, 5)), weight = seq(100, 200, 50),
+            sex = c("Male","Female"), stringsAsFactors = FALSE)
+```
+*This creates
