@@ -1,37 +1,54 @@
 ---
-title: "Untitled"
+title: "Homework 2, Alice"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Rename the blood_type_factor in the above example as follows:
+levels(blood_type_factor) <- c("BT_A", "BT_B", "BT_AB", "BT_O")
+and justify the result of outputting blood_type_factor. Use str() to support your answer.
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-#Rename the blood_type_factor in the above example as follows:
-#levels(blood_type_factor) <- c("BT_A", "BT_B", "BT_AB", "BT_O")
-#and justify the result of outputting blood_type_factor. Use str() to support your answer.
+```{r}
 blood_type <- c("B", "A", "AB", "A", "O")
 blood_type_factor <- factor(blood_type)
 levels(blood_type_factor) <- c("BT_A", "BT_B", "BT_AB", "BT_O")
 print(blood_type_factor)
 str(blood_type_factor)
+```
+The issue seems to be order. When we make blood_type into a factor, it reorders things, but not in the order that I re-labeled the levels.
+
+Use the inequality operator (< or >) on a nominal category and print the output.
+```{r}
+1 > 2
+```
+
+```{r}
+blood_test <- list(Fluid="Blood sugar", Category="High", Value=140, Units="mg/dL")
+patient <- list(Name="Mike", Age=36, Btest = blood_test)
+```
+
+What does patient[c(1,3)] give us? A list.
+```{r}
+patient[c(1,3)]
+class(patient[c(1,3)])
+```
+
+What does patient[[c(1,3)]] give us? An error, because there's no 3rd item in the first item on the list.
+
+```{r}
+#patient[[c(1,3)]]
+#Error in patient[[c(1, 3)]] : subscript out of bounds
+```
+
+How about patient[[c(3,1)]]? A character. It gave us the first value in the 3rd item.
+```{r}
+patient[[c(3,1)]]
+class(patient[[c(3,1)]])
+```
+
+How do you remove an element from a list? I just removed the whole column, which probably isn't right. So for good measure, I also made the age into NA.
+```{r}
+patient$Name <- NULL
+patient[c(1)] <- NA
+patient
+```
+
