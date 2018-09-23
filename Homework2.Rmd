@@ -72,9 +72,9 @@ Test the operations of lists (like ["age"] & [["age"]]) on data frames.
 class(df["Age"]) # Prints a data frame with just one column
 class(df[["Age"]]) #Prints a numeric vector
 ```
-Use cbind() to append a vector of choice.  
+Use cbind() to append a vector of choice. *Now that my df has 5 rows, I need 6 answers to this question.*
 ```{r}
-df2 <- cbind(df,Family_History=c(TRUE,TRUE, FALSE,FALSE))
+df2 <- cbind(df,Family_History=c(TRUE,TRUE,FALSE,FALSE,FALSE))
 ```
 What happens if the length of the appending vector is greater than (or less than) row dimensions? *If the appending vector has too many or too few elements, you get an error message about the number of rows.*
 
@@ -94,4 +94,84 @@ Try out the following example and think when it is useful.
 expand.grid(height = as.character(seq(60, 70, 5)), weight = seq(100, 200, 50),
             sex = c("Male","Female"), stringsAsFactors = FALSE)
 ```
-*This creates
+*This creates a data frame that contains every possible combination of height, weight and sex.  Thus there are (3 heights)x(3 weights)x(2 sexes)=18 total rows.  This might be useful if you wanted to study the ways these variables affected an outcome such as having diabetes, and wanted to look at people with all different combinations of these variables so that you could tease out the effect of each one.*
+
+Why does sort(df$age) return an error? *It doesn't return an error for me, it just creates a (somewhat useless) ordered numeric vector of ages.*
+When you fix the problem, what does the command perform and how is it related to the ranks? *I didn't get an error so I don't know*
+Sort the entries in descending order of the age. (Hint: Question the function to find out more about the function in question). *I used order and then sorted according to those ranks, as in the example. Sort sorts a vector or factor in order, but order is used for sorting data frames by one variable. Order rearranges its first argument into ascending or descending order. This can then be applied to the data frame.*
+```{r}
+sorted <- sort(df$Age)
+ordered <- order(df$Age)
+df_ordered <- df[ordered,]
+```
+
+##Graphics
+```{r echo=FALSE}
+install.packages("RCurl")
+library(RCurl)
+URL_text_1 <- "https://raw.githubusercontent.com/kannan-kasthuri/kannan-kasthuri.github.io"
+URL_text_2 <- "/master/Datasets/HANES/NYC_HANES_DIAB.csv"
+URL <- paste(URL_text_1, URL_text_2, sep="")
+HANES <- read.csv(text = getURL(URL))
+HANES$GENDER <- as.factor(HANES$GENDER)
+HANES$AGEGROUP <- as.factor(HANES$AGEGROUP)
+HANES$HSQ_1 <- as.factor(HANES$HSQ_1)
+plot(HANES$GENDER)
+```
+
+*This plot is not very informative, because we don't know which factor (1 or 2) is males. Relabelling would make it more helpful.*
+
+```{r echo=FALSE}
+HANES$GENDER <- factor(HANES$GENDER, labels=c("M","F"))
+HANES$AGEGROUP <- factor(HANES$AGEGROUP, labels=c("20-39","40-59","60+"))
+HANES_MALE <- HANES$GENDER == "M"
+MALES_DF <- HANES[HANES_MALE,]
+hist(MALES_DF$A1C)
+abline(v = mean(MALES_DF$A1C, na.rm = T), col="red")
+```
+
+Find the distribution of A1C for the female population in the above data set. Are they different?
+```{r}
+HANES_FEMALE <- HANES$GENDER == "F"
+FEMALES_DF <- HANES[HANES_FEMALE,]
+hist(FEMALES_DF$A1C,xlim=c(3,14))
+abline(v = mean(FEMALES_DF$A1C, na.rm = T), col="red")
+```
+*They look quite similar. I adjusted the x axis to make them more easily visually comparable.*
+
+Add vertical lines that indicate the boundaries of the standard error of the mean.
+```{r}
+hist(FEMALES_DF$A1C,xlim=c(3,14))
+abline(v = mean(FEMALES_DF$A1C, na.rm = T), col="red")
+```
+
+Find the distribution of A1C for three age groups in the above data set. Is there a difference?
+```{r}
+HANES_Age1 <- HANES$AGEGROUP == 1
+HANES_Age2 <- HANES$AGEGROUP == 2
+HANES_Age3 <- HANES$AGEGROUP == 3
+Age1_DF <- HANES[HANES_Age1,]
+Age2_DF <- HANES[HANES_Age2,]
+Age3_DF <- HANES[HANES_Age3,]
+hist(Age1_DF$A1C,xlim = c(4,14),ylim = c(0,350), breaks = 7)
+hist(Age2_DF$A1C,xlim = c(4,14),ylim = c(0,350), breaks = 10)
+hist(Age3_DF$A1C,xlim = c(4,14),ylim = c(0,350), breaks = 10)
+```
+The histogram is shifted further left in the first age group, but the distributions for 2 and 3 look similar. I don't know of a less manual way to make the histograms comparable than setting the bins and axis lengths.
+
+Try to find the distribution of one more numeric variable (other than A1C) for the three age-groups.
+```{r}
+hist(Age1_DF$LDLESTIMATE,xlim = c(0,300), ylim = c(0,200), breaks = 10)
+hist(Age2_DF$LDLESTIMATE,xlim = c(0,300),ylim = c(0,200), breaks = 10)
+hist(Age3_DF$LDLESTIMATE,xlim = c(0,300),ylim = c(0,200), breaks = 10)
+```
+I did this for LDL. As before, the distribution seems centered lower for the first age group.
+
+Try some plots with a higher number of bins in the above exercise, what happens?
+```{r}
+hist(Age1_DF$LDLESTIMATE,xlim = c(0,250), ylim = c(0,75), breaks = 30)
+hist(Age2_DF$LDLESTIMATE,xlim = c(0,250),ylim = c(0,75), breaks = 30)
+hist(Age3_DF$LDLESTIMATE,xlim = c(0,250),ylim = c(0,75), breaks = 30)
+```
+
+The LDL estimate pattern still looks similar. I had to adjust the axis limits a bit so that there wasn't too much white space. It's now even more clear that the median is lower for the first age group. The second age group seems to peak around 110, whereas the third age group has a flatter distribution.
