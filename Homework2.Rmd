@@ -107,7 +107,7 @@ df_ordered <- df[ordered,]
 
 ##Graphics
 ```{r echo=FALSE}
-install.packages("RCurl")
+#install.packages("RCurl")
 library(RCurl)
 URL_text_1 <- "https://raw.githubusercontent.com/kannan-kasthuri/kannan-kasthuri.github.io"
 URL_text_2 <- "/master/Datasets/HANES/NYC_HANES_DIAB.csv"
@@ -147,9 +147,9 @@ abline(v = mean(FEMALES_DF$A1C, na.rm = T), col="red")
 
 Find the distribution of A1C for three age groups in the above data set. Is there a difference?
 ```{r}
-HANES_Age1 <- HANES$AGEGROUP == 1
-HANES_Age2 <- HANES$AGEGROUP == 2
-HANES_Age3 <- HANES$AGEGROUP == 3
+HANES_Age1 <- HANES$AGEGROUP == "20-39"
+HANES_Age2 <- HANES$AGEGROUP == "40-59"
+HANES_Age3 <- HANES$AGEGROUP == "60+"
 Age1_DF <- HANES[HANES_Age1,]
 Age2_DF <- HANES[HANES_Age2,]
 Age3_DF <- HANES[HANES_Age3,]
@@ -177,9 +177,9 @@ hist(Age3_DF$LDLESTIMATE,xlim = c(0,250),ylim = c(0,75), breaks = 30)
 The LDL estimate pattern still looks similar. I had to adjust the axis limits a bit so that there wasn't too much white space. It's now even more clear that the median is lower for the first age group. The second age group seems to peak around 110, whereas the third age group has a flatter distribution.
 
 ```{r}
-install.packages("Hmisc")
-library(Hmisc)
-label(HANES$GLUCOSE) <- "Plasma Glucose [mg/dL]"
+#install.packages("Hmisc")
+#library(Hmisc)
+#label(HANES$GLUCOSE) <- "Plasma Glucose [mg/dL]"
 plot(HANES$GLUCOSE, HANES$GLUCOSESI, 
        xlab= "Plasma Glucose [mg/dL]", ylab = expression(paste("Blood Glucose SI units [", mu, "mole/L]")), 
        main = "Plasma vs Blood Glucose", type = "o", col="blue")
