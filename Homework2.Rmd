@@ -175,3 +175,42 @@ hist(Age3_DF$LDLESTIMATE,xlim = c(0,250),ylim = c(0,75), breaks = 30)
 ```
 
 The LDL estimate pattern still looks similar. I had to adjust the axis limits a bit so that there wasn't too much white space. It's now even more clear that the median is lower for the first age group. The second age group seems to peak around 110, whereas the third age group has a flatter distribution.
+
+```{r}
+install.packages("Hmisc")
+library(Hmisc)
+label(HANES$GLUCOSE) <- "Plasma Glucose [mg/dL]"
+plot(HANES$GLUCOSE, HANES$GLUCOSESI, 
+       xlab= "Plasma Glucose [mg/dL]", ylab = expression(paste("Blood Glucose SI units [", mu, "mole/L]")), 
+       main = "Plasma vs Blood Glucose", type = "o", col="blue")
+```
+Hmisc::label() stores label attributes for a variable.
+This isn't working for me at the moment, because I can't seem to load Hmisc, but I guess that it could make a label that would then show up as the relevant axis on al future graphs. It looks like you still have to specify: xlab = label(LDL)) in the code that you use to make the figure.
+
+```{r}
+plot(HANES$GLUCOSE, HANES$GLUCOSESI, 
+       xlab= "Plasma Glucose [mg/dL]", ylab = expression(paste("Blood Glucose SI units [", mu, "mole/L]")), 
+       main = "Plasma vs Blood Glucose", type = "l", col="blue")
+```
+This is a line plot.
+
+```{r}
+  par(mfcol = c(2,2))
+  plot(HANES$LDL, HANES$HDL)
+  plot(HANES$A1C, HANES$HDL)
+  plot(HANES$GLUCOSE, HANES$HDL)
+  plot(HANES$CHOLESTEROLTOTAL, HANES$HDL)
+  par(mfrow = c(1,1))
+```
+mfcol fills the graphs in by column rather than by row.
+
+Make a plot and add elements through the functions points(), lines(), segments() and text().
+```{r}
+plot(HANES$LDL, HANES$HDL)
+ldl_hdl <- lm (HANES$LDL~HANES$HDL)
+abline(coef(ldl_hdl),lwd = 2)
+text(200,120, "HDL vs LDL",col = "red")
+lines(fitted(ldl_hdl), col="blue") #not what I was expecting...
+lines(y=40,x=40,col = "orange") #doesn't work
+```
+
